@@ -1,4 +1,5 @@
 import java.io.IOException;
+import java.io.PrintStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 /**
@@ -6,17 +7,25 @@ import java.net.Socket;
  */
 public class ServeurMulti {
 
-    private ServeurSocket ss;
+    private ServerSocket ss;
 
     public void launch(int port) throws IOException {
 
-        this.ss = new ServeurSocket(port);
+        this.ss = new ServerSocket(port);
          while(true){
              Socket clientSocket = this.ss.accept();
              System.out.println("new client " + clientSocket.getInetAddress());
-             ServeurThread thread = new ServeurThread(clientSocket);
+             if(canBeAccepted()){
+                 ServeurThread thread = new ServeurThread(clientSocket);
+             }
+
          }
 
+    }
+
+    //Methode qui dit si le nouveau client peut etre accepter (nombre de thread limités)
+    public boolean canBeAccepted(){
+        return true;
     }
 
 }
