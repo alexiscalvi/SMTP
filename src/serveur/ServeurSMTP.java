@@ -1,3 +1,7 @@
+package serveur;
+
+import serveur.ServeurMulti;
+
 import java.io.IOException;
 
 /**
@@ -9,7 +13,7 @@ public class ServeurSMTP {
 
         //instanciation du serveur
         ServeurMulti serveurMulti = new ServeurMulti();
-        serveurMulti.launch(25);
+        serveurMulti.launch(25, "ServeurLucasFlorianAlexis", 4);
 
 
     }

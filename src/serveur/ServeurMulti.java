@@ -1,3 +1,5 @@
+package serveur;
+
 import java.io.IOException;
 import java.io.PrintStream;
 import java.net.ServerSocket;
@@ -9,14 +11,15 @@ public class ServeurMulti {
 
     private ServerSocket ss;
 
-    public void launch(int port) throws IOException {
+
+    public void launch(int port, String serverName, int sizeDestMax) throws IOException {
 
         this.ss = new ServerSocket(port);
          while(true){
              Socket clientSocket = this.ss.accept();
              System.out.println("new client " + clientSocket.getInetAddress());
              if(canBeAccepted()){
-                 ServeurThread thread = new ServeurThread(clientSocket);
+                 ServeurThread thread = new ServeurThread(clientSocket, serverName, sizeDestMax);
              }
 
          }
