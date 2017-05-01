@@ -51,7 +51,7 @@ public class StateWaitRCPT implements Etat{
             thread.send("550 no such user");
 
         }
-        
+
     }
 
     @Override
@@ -67,6 +67,12 @@ public class StateWaitRCPT implements Etat{
 
     @Override
     public void quit() {
-        thread.nonAutorise();
+        thread.send("+OK");
+        thread.closeClientSocket();
+    }
+
+    @Override
+    public String getLabel() {
+        return "WaitRCPT";
     }
 }

@@ -59,37 +59,49 @@ public class ServeurThread extends Thread{
                     stringList[0] = mess;
                 }
 
-                //appelle la méthode correspondant au 1er mot du message (APOP, STAT, ...)
-                switch (stringList[0]) {
-                    case "ehlo":
-                        this.state.ehlo();
-                        break;
-                    case "MAILFROM":
-                        if(!stringList[1].isEmpty()){
-                            this.state.mailFrom(stringList[1]);
-                        }
-                        else{
-                            this.missingArgument();
-                        }
-                        break;
-                    case "RCPTTO":
-                        if(!stringList[1].isEmpty()){
-                            this.state.rcptTo(stringList[1]);
-                        }
-                        else{
-                            this.missingArgument();
-                        }
-                        break;
-                    case "RSET":
-                        this.state.reset();
-                        break;
-                    case "DATA":
-                        this.state.data(stringList);
-                        break;
-                    case "QUIT":
-                        this.state.quit();
-                        break;
+                //Cas ou on attend DATA
+                if(state.getLabel() == "StateWaitData2"){
+                    state.data(stringList);
 
+                }
+                else {
+
+                    //appelle la méthode correspondant au 1er mot du message (APOP, STAT, ...)
+                    switch (stringList[0]) {
+                        case "ehlo":
+                            System.out.println("ehlo");
+                            this.state.ehlo();
+                            break;
+                        case "MAILFROM":
+                            System.out.println("MAILFROM");
+                            if (!stringList[1].isEmpty()) {
+                                this.state.mailFrom(stringList[1]);
+                            } else {
+                                this.missingArgument();
+                            }
+                            break;
+                        case "RCPTTO":
+                            System.out.println("rcptto");
+                            if (!stringList[1].isEmpty()) {
+                                this.state.rcptTo(stringList[1]);
+                            } else {
+                                this.missingArgument();
+                            }
+                            break;
+                        case "RSET":
+                            System.out.println("rset");
+                            this.state.reset();
+                            break;
+                        case "DATA":
+                            System.out.println("data");
+                            this.state.data(stringList);
+                            break;
+                        case "QUIT":
+                            System.out.println("quit");
+                            this.state.quit();
+                            break;
+
+                    }
                 }
             } catch (IOException e) {
                 e.printStackTrace();
@@ -99,6 +111,7 @@ public class ServeurThread extends Thread{
 
     //Cette méthode permet à un état de changer l'état de cette classe.
     public void changeState(Etat state) {
+        System.out.println("Nouvel etat: " + state.getLabel());
         this.state = state;
     }
 
@@ -147,18 +160,22 @@ public class ServeurThread extends Thread{
         bufferDest.clear();
         System.out.println("Les buffers ont été vidé.");
     }
+
     public void addSender(String user){
         this.bufferSender.add(user);
         System.out.println("User ajouté au bufferSender");
     }
+
     public void addDest(String user){
         this.bufferDest.add(user);
         System.out.println("User ajouté au bufferDest");
     }
+
     public void addData(String user){
         this.bufferData.add(user);
         System.out.println("Données ajoutées au bufferData");
     }
+
     public List<String> getBufferSender(){
         return bufferSender;
     }

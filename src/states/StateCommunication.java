@@ -50,4 +50,9 @@ public class StateCommunication implements Etat{
         thread.send("+OK");
         thread.closeClientSocket();
     }
+
+    @Override
+    public String getLabel() {
+        return "Communication";
+    }
 }

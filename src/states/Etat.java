@@ -16,4 +16,6 @@ public interface Etat {
     void data(String[] data);
 
     void quit();
+
+    String getLabel();
 }
