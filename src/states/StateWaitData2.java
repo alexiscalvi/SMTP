@@ -68,8 +68,6 @@ public class StateWaitData2 implements Etat{
 
             thread.addData(to);
 
-
-
             int i = 1;
             String subject = "";
             if (data[0].equals("Subject:")) {
@@ -84,14 +82,22 @@ public class StateWaitData2 implements Etat{
             }
 
             String content = "";
-            for(int j=i+1; j<data.length; j++){
-                content += data[i]+ " ";
+            for(int j=i+1; j<data.length-1; j++){
+                content += data[j]+ " ";
             }
 
             thread.addData(content);
 
             for(String dest: thread.getBufferDest()){
                 String path = "users/" + dest + "/" + subject;
+
+                /*
+                Gestion du cas ou le subject existe deja
+                 */
+                File monFichier = new File(path);
+                if(monFichier.exists()){
+                    path += "(1)";
+                }
                 System.out.println("path: "+ path);
                 try {
                     BufferedWriter writer = new BufferedWriter(new FileWriter(new File(path)));
@@ -111,19 +117,14 @@ public class StateWaitData2 implements Etat{
         }
         else{
             thread.send("554 Votre message doit terminer par <CR><LF>.<CR><LF>");
+            thread.clearBuffers();
             thread.changeState(new StateCommunication(thread));
         }
-
-
-
-
-
 
     }
 
     @Override
     public void quit() {
-
     }
 
     @Override
