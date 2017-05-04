@@ -60,7 +60,7 @@ public class ServeurThread extends Thread{
                 }
 
                 //Cas ou on attend DATA
-                if(state.getLabel() == "StateWaitData2"){
+                if(state.getLabel().equals("WaitData2")){
                     state.data(stringList);
 
                 }
@@ -171,9 +171,8 @@ public class ServeurThread extends Thread{
         System.out.println("User ajouté au bufferDest");
     }
 
-    public void addData(String user){
-        this.bufferData.add(user);
-        System.out.println("Données ajoutées au bufferData");
+    public void addData(String ligne){
+        this.bufferData.add(ligne);
     }
 
     public List<String> getBufferSender(){

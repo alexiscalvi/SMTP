@@ -2,6 +2,10 @@ package states;
 
 import serveur.ServeurThread;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -37,44 +41,73 @@ public class StateWaitData2 implements Etat{
     }
 
     @Override
-    public void data(String[] data) {
-
-        if(data[data.length - 1] == "<CR><LF>.<CR><LF>") {
+    public void data(String[] data) throws IOException {
 
 
-            StringBuilder stb = new StringBuilder();
-            String date = new SimpleDateFormat("dd-MM-yyyy").format(new Date());
-            stb.append("Date: ");
-            stb.append(date);
-            stb.append("/n From: ");
-            stb.append(thread.getBufferSender().get(0));
-            stb.append("/n To: ");
+
+        if(data[data.length - 1].equals("<CR><LF>.<CR><LF>")) {
+
+            String date = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss.SS").format(new Date());
+            thread.addData("Date: "+ date);
+
+            String from = "From: ";
+            from += thread.getBufferSender().get(0);
+            thread.addData(from);
+
+            String to = "To: ";
+
             boolean firstDest = true;
             for (String dest : thread.getBufferDest()) {
                 if (firstDest) {
-                    stb.append(dest);
+                    to += dest;
                     firstDest = false;
                 } else {
-                    stb.append(", " + dest);
+                    to += ", " + dest;
                 }
             }
-            stb.append("/n");
-            int i = 1;
-            if (data[0] == "Subject") {
-                stb.append("Subject: ");
 
-                while (data[i] != "/n") {
-                    stb.append(data[i] + " ");
+            thread.addData(to);
+
+
+
+            int i = 1;
+            String subject = "";
+            if (data[0].equals("Subject:")) {
+                while (!data[i].equals("\\n")) {
+                    subject += data[i] + " ";
                     i++;
                 }
-                stb.append("/n");
-
+                thread.addData("Subject: "+ subject);
             }
+            else{
+                subject += date;
+            }
+
+            String content = "";
             for(int j=i; j<data.length -1; j++){
-                stb.append(data[i]+ " ");
+                content += data[i]+ " ";
             }
 
-            System.out.println(stb);
+            thread.addData(content);
+
+            for(String dest: thread.getBufferDest()){
+                String path = "users/" + dest + "/" + subject;
+                System.out.println("path: "+ path);
+                try {
+                    BufferedWriter writer = new BufferedWriter(new FileWriter(new File(path)));
+                    for(String ligne : thread.getBufferData()){
+                        writer.write(ligne);
+                        writer.newLine();
+                    }
+                    writer.close();
+                }
+                catch (IOException e)
+                {
+                    e.printStackTrace();
+                }
+            }
+
+
         }
         else{
             thread.send("554 Votre message doit terminer par <CR><LF>.<CR><LF>");

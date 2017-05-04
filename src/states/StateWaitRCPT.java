@@ -58,6 +58,7 @@ public class StateWaitRCPT implements Etat{
     public void reset() {
         thread.clearBuffers();
         thread.send("250 OK");
+        thread.changeState(new StateCommunication(thread));
     }
 
     @Override
