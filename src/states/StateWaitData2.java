@@ -80,11 +80,11 @@ public class StateWaitData2 implements Etat{
                 thread.addData("Subject: "+ subject);
             }
             else{
-                subject += date;
+                subject += data[0];
             }
 
             String content = "";
-            for(int j=i; j<data.length -1; j++){
+            for(int j=i+1; j<data.length; j++){
                 content += data[i]+ " ";
             }
 
