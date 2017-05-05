@@ -112,6 +112,8 @@ public class StateWaitData2 implements Etat{
                     e.printStackTrace();
                 }
             }
+            thread.send("250 OK send");
+            thread.changeState(new StateCommunication(thread));
 
 
         }
